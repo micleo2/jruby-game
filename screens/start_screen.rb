@@ -1,30 +1,25 @@
 require 'java'
-require_relative 'lib/pack.jar'
-require_relative 'circle'
+require_relative '../lib/pack2.jar'
+require_relative '../game-elements/circle'
+require_relative '../config'
 
 java_import "Screen"
-
-def jColor
-  java.awt.Color
-end
+java_import "java.awt.event.KeyEvent"
+java_import "java.awt.Color"
 
 def randomColor
-  jColor.new rand(255), rand(255), rand(255)
+  Color.new rand(255), rand(255), rand(255)
 end
 
 class StartScreen < Screen
   NUM_CIRCLES = 20
   def initialize(gs, w, h)
     super(gs, w, h)
-    @x = 0
     @mouseColor = randomColor
-    @circles = []
-    @w = w
-    @h = h
-    NUM_CIRCLES.times do
+    @circles = NUM_CIRCLES.times.map do
       nx = rand w - 30
       ny = rand h - 30
-      @circles.push(Circle.new nx, ny, 20)
+      Circle.new nx, ny, 20
     end
   end
 
@@ -37,20 +32,25 @@ class StartScreen < Screen
     @circles.each do |x|
       x.draw g
     end
-    g.setColor jColor.white
-    Screen.drawCenteredString g, "Click to change colors", @w/2, 50
+    g.setColor Color.white
+    Screen.drawCenteredString g, "Click to change colors", self.getWidth/2, 50
+    Screen.drawCenteredString g, "Press s to start", self.getWidth/2, 70
   end
 
 	def update()
     @circles.each do |x|
-      x.update @w, @h
+      x.update self.getWidth, self.getHeight
     end
   end
+	def keyPressed(e)
+    self.getState.setIndex Common::PLAY if e.getKeyCode == KeyEvent::VK_S
+  end
 
-  #INHERITED FROM ABSTRACT SCREEN CLASS
-	def keyPressed(e)    ;end
-	def keyReleased(e)   ;end
-	def mousePressed(o)  ;end
+  def keyReleased(e)
+  end
+
+	def mousePressed(o)
+  end
 
 	def mouseReleased(o)
     @mouseColor = randomColor

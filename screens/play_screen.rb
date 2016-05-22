@@ -1,9 +1,10 @@
 require 'java'
-require_relative 'lib/pack.jar' #path of jar file
+require_relative '../lib/pack2.jar'
 
 java_import "Screen"
+java_import "java.awt.Color"
 
-class StartScreen < Screen
+class PlayScreen < Screen
   def initialize(gs, w, h)
     super(gs, w, h)
   end
@@ -12,6 +13,8 @@ class StartScreen < Screen
   end
 
 	def render(g)
+    g.setColor Color.white
+    Screen.drawCenteredString g, "new screen", self.getWidth/2, 50
   end
 
 	def update()
